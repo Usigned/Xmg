@@ -1,0 +1,16 @@
+# picture data
+**/*.jpg
+**/*.jpeg
+
+# dataset
+**/*dataset*
+
+# models
+**/*models*
+
+
+# output
+**/output
+
+
+**/__pycache__
