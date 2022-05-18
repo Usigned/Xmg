@@ -130,12 +130,16 @@ class XmgPredictor:
     def __init__(self, rec_config_path, gallery_path, vote=False):
         conf = config.get_config(rec_config_path, show=False)
         self.rec_model = RecPredictor(conf)
+        # id_map => dict
         self.searcher, self.id_map = load_gallery(gallery_path)
         self.vote = vote
     
     def predict(self, images):
+        # 返回(n, 512) ndarray float32
         rec_result = self.rec_model.predict(images)
         return_k = 5
+        # scores: (n, return_k)  float32
+        # docs: (n, return_k) int64
         scores, docs = self.searcher.search(rec_result, return_k)
         
         predict_result = []
@@ -178,17 +182,17 @@ class XmgPredictor:
 
 if __name__ == "__main__":
 
-    searcher, id_map = load_gallery("./xmg_dataset/index")
+    searcher, id_map = load_gallery("./dataset/index")
     # print(id_map)
 
-    data_dir = './xmg_dataset/all'
+    data_dir = './dataset/all'
     rec_config = './configs/xmg_test.yaml'
-    gallery_path = './xmg_dataset/index'
+    gallery_path = './dataset/index'
     predictor = XmgPredictor(rec_config, gallery_path)
     
 
     precision_dict = {}
-    for idx in range(1, 13):
+    for idx in range(12, 13):
         path = os.path.join(data_dir, str(idx))
         image_list = get_image_list(path)
         precision_dict[idx], res = predictor.test_class(idx, image_list)

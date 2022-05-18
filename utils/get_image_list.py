@@ -16,7 +16,7 @@ import os
 import argparse
 import base64
 import numpy as np
-
+import cv2
 
 def get_image_list(img_file):
     imgs_lists = []
@@ -47,3 +47,18 @@ def get_image_list_from_label_file(image_path, label_file_path):
             imgs_lists.append(os.path.join(image_path, image_name))
             gt_labels.append(int(label))
     return imgs_lists, gt_labels
+
+
+def read_images(image_list):
+    '''
+    从路径列表中读取图片
+    '''
+    imgs = []
+    
+    for img_path in image_list:
+        img = cv2.imread(img_path) # image (H, W, C-BGR)
+
+        img = img[:, :, ::-1] # bgr2rgb
+        imgs.append(img)
+        img_name = os.path.basename(img_path)
+    return imgs
